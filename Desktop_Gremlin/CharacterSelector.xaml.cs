@@ -94,6 +94,7 @@ namespace Desktop_Gremlin
                 case "Exu": return "Exusiai";
                 case "Exu2": return "Exusiai (Alternative)";
                 case "GoldShip": return "Gold Ship";
+                case "Cafe": return "Manhattan Cafe";
                 default: return characterName;
             }
         }

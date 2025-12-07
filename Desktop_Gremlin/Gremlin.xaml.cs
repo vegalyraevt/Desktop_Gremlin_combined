@@ -885,7 +885,7 @@ namespace Desktop_Gremlin
         // Excludes Blue Archive characters (Exusiai, Koyuki, etc.)
         private static readonly string[] UmaMusumeCharacters = new[] 
         { 
-            "Agnes Tachyon", "Oguri", "RiceShower", "GoldShip", "Mambo", "Opera", "Doto",
+            "Agnes Tachyon", "Oguri", "RiceShower", "GoldShip", "Mambo", "Opera", "Doto", "Cafe",
             "Bakushin", "Pasa", "Teio"  // Dance-only Umas
         };
         
@@ -1195,8 +1195,15 @@ namespace Desktop_Gremlin
         {
             if (_raceRunners.Count == 0) return;
             
-            // Sort runners by laps (desc), then by edge progress
-            var sorted = _raceRunners.OrderByDescending(r => r.LapCount * 100 + r.CurrentEdge * 25 + r.EdgeProgress * 25).ToList();
+            const int startEdge = 2; // All runners start at bottom edge
+            
+            // Sort runners by total distance traveled (laps + edges from start + progress)
+            // Uses same formula as winner determination for consistency
+            var sorted = _raceRunners.OrderByDescending(r => 
+            {
+                int edgesFromStart = (r.CurrentEdge - startEdge + 4) % 4;
+                return (r.LapCount * 4.0) + edgesFromStart + r.EdgeProgress;
+            }).ToList();
             
             for (int i = 0; i < sorted.Count; i++)
             {
@@ -1804,13 +1811,18 @@ namespace Desktop_Gremlin
             // Winner is whoever has traveled the furthest total distance (laps + current position)
             RaceRunner winner = null;
             double winnerDistance = -1;
+            const int startEdge = 2; // All runners start at bottom edge
+            
             if (_raceRunners.Count > 0)
             {
                 foreach (var runner in _raceRunners)
                 {
-                    // Calculate total distance: each lap = 4 edges, plus current edge progress
-                    // This gives a fair comparison regardless of when they crossed the lap line
-                    double totalDistance = (runner.LapCount * 4.0) + runner.CurrentEdge + runner.EdgeProgress;
+                    // Calculate edges traveled from start (clockwise: 2→3→0→1→2)
+                    // This correctly handles the wrap-around from edge 3 to edge 0
+                    int edgesFromStart = (runner.CurrentEdge - startEdge + 4) % 4;
+                    double totalDistance = (runner.LapCount * 4.0) + edgesFromStart + runner.EdgeProgress;
+                    
+                    DebugOverlay.Log("RACE", $"{runner.CharacterName}: Lap {runner.LapCount}, Edge {runner.CurrentEdge}, Progress {runner.EdgeProgress:F2}, Total: {totalDistance:F2}");
                     
                     if (totalDistance > winnerDistance)
                     {
@@ -1819,7 +1831,7 @@ namespace Desktop_Gremlin
                     }
                 }
                 
-                DebugOverlay.Log("RACE", $"Race ended! Winner: {winner?.CharacterName} with distance {winnerDistance:F2} ({winner?.LapCount} laps)");
+                DebugOverlay.Log("RACE", $"🏆 Race ended! Winner: {winner?.CharacterName} with distance {winnerDistance:F2} ({winner?.LapCount} laps)");
             }
             
             _isUmaPartyActive = false;
@@ -1921,15 +1933,55 @@ namespace Desktop_Gremlin
                 Margin = new Thickness(10)
             };
             
-            // Use a gold trophy emoji/text instead of the broken first_place.png (it's actually WebP not PNG)
-            var trophyLabel = new System.Windows.Controls.TextBlock
+            // Load first place trophy image
+            string trophyPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SpriteSheet", "System", "first_place.png");
+            if (System.IO.File.Exists(trophyPath))
             {
-                Text = "🥇",
-                FontSize = 80,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(10)
-            };
-            contentStack.Children.Add(trophyLabel);
+                try
+                {
+                    var trophyBitmap = new BitmapImage();
+                    trophyBitmap.BeginInit();
+                    trophyBitmap.UriSource = new Uri(trophyPath);
+                    trophyBitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    trophyBitmap.EndInit();
+                    trophyBitmap.Freeze();
+                    
+                    var trophyImage = new System.Windows.Controls.Image
+                    {
+                        Source = trophyBitmap,
+                        Width = 100,
+                        Height = 100,
+                        Stretch = Stretch.Uniform,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(10)
+                    };
+                    contentStack.Children.Add(trophyImage);
+                }
+                catch
+                {
+                    // Fallback to emoji if image fails
+                    var trophyLabel = new System.Windows.Controls.TextBlock
+                    {
+                        Text = "🥇",
+                        FontSize = 80,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(10)
+                    };
+                    contentStack.Children.Add(trophyLabel);
+                }
+            }
+            else
+            {
+                // Fallback to emoji if image not found
+                var trophyLabel = new System.Windows.Controls.TextBlock
+                {
+                    Text = "🥇",
+                    FontSize = 80,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10)
+                };
+                contentStack.Children.Add(trophyLabel);
+            }
             
             // Character info panel
             var infoStack = new System.Windows.Controls.StackPanel
@@ -1989,7 +2041,8 @@ namespace Desktop_Gremlin
                     { "Mambo", new[] { "Mambo", "Mambo2", "mambo_plush", "mambo_plush2" } },
                     { "Opera", new[] { "opera", "Opera_Plush" } },
                     { "Koyuki", new[] { "Koyuki" } },
-                    { "Exusiai", new[] { "Exusiai" } }
+                    { "Exusiai", new[] { "Exusiai" } },
+                    { "Cafe", new[] { "cafe1", "cafe2", "cafe3", "cafe_plush" } }
                 };
                 
                 string[] possibleIcons = null;

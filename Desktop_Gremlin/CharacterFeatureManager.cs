@@ -135,7 +135,7 @@ namespace Desktop_Gremlin
                 HasIntroOutro = true,
                 HasDanceAnimation = true,
                 HasSleepAnimation = true,
-                DefaultCompanion = "Mambo"  // Agnes + Mambo (same 300x300 size)
+                DefaultCompanion = "Cafe"  // Agnes + Cafe are a set pair
             };
 
             // Opera - Effects-based character, can spawn Doto or Oguri as companion
@@ -208,6 +208,18 @@ namespace Desktop_Gremlin
                 HasDiagonalMovement = true,
                 UsesLegacyAnimationNames = true,
                 HasIntroOutro = true
+            };
+            
+            // Manhattan Cafe - Full featured Uma Musume character
+            _characterFeatures["Cafe"] = new CharacterFeatures
+            {
+                HasWalkAnimations = true,
+                HasEmoteAnimations = true,
+                HasDiagonalMovement = true,
+                HasIntroOutro = true,
+                HasSleepAnimation = true,
+                HasRunAnimations = true,
+                DefaultCompanion = "Agnes Tachyon"  // Cafe + Agnes Tachyon
             };
         }
 

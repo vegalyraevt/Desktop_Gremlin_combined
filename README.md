@@ -43,7 +43,8 @@ Available icons include regular sprites and plush variants for most characters.
 | Character | Movement | Animations | Companion | Notes |
 |-----------|----------|------------|-----------|-------|
 | **Meisho Doto** | Full 8-direction | Idle, Walk, Run, Emotes, Intro/Outro, Sleep | Opera | Main character with full feature set |
-| **Agnes Tachyon** | Full 8-direction | Idle, Walk, Run, Emotes, Dance, Sleep | Mambo | Has dance animation |
+| **Manhattan Cafe** | Full 8-direction | Idle, Walk, Run, Emotes, Intro/Outro, Sleep | Agnes Tachyon | New in v3.1! Full feature set |
+| **Agnes Tachyon** | Full 8-direction | Idle, Walk, Run, Emotes, Dance, Sleep | Manhattan Cafe | Has dance animation |
 | **Gold Ship** | Full 8-direction | Idle, Walk, Run, Intro/Outro | — | Walk-focused character |
 | **Oguri Cap** | Full 8-direction | Idle, Run, Dance, Intro/Outro | Opera | Has dance animation |
 | **Rice Shower** | Full 8-direction | Idle, Walk, Run, Emotes, Dance, Sleep | — | Has dance animation |
@@ -101,6 +102,7 @@ The `Icons/` folder contains `.ico` files for each character with multiple varia
 
 | Character | Available Icons |
 |-----------|----------------|
+| Manhattan Cafe | cafe1, cafe2, cafe3, cafe_plush |
 | Agnes Tachyon | Tach1, Tach2, Tach3, Tach_plush |
 | Gold Ship | gold1, gold2, gold3, gold4, Gold_plush1, Gold_plush2 |
 | Oguri Cap | Oguri, Oguri_plush1, Oguri_plush2 |
