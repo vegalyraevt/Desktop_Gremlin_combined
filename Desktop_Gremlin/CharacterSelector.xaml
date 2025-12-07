@@ -1,0 +1,133 @@
+<Window x:Class="Desktop_Gremlin.CharacterSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Select Character" 
+        Height="400" 
+        Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        Background="#2C2C2C">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="Choose Your Desktop Companion" 
+                   FontSize="18" 
+                   FontWeight="Bold" 
+                   Foreground="White" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,20"/>
+        
+        <!-- Character List -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ListBox Name="CharacterListBox" 
+                     Background="#3C3C3C" 
+                     BorderBrush="#555555" 
+                     BorderThickness="1"
+                     SelectionMode="Single"
+                     MouseDoubleClick="CharacterListBox_MouseDoubleClick">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Padding" Value="10"/>
+                        <Setter Property="Margin" Value="2"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4A4A4A"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#0078D4"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Character Icon/Preview -->
+                            <Border Grid.Column="0" 
+                                    Width="40" 
+                                    Height="40" 
+                                    Background="#555555" 
+                                    CornerRadius="20" 
+                                    Margin="0,0,10,0">
+                                <TextBlock Text="{Binding Initial}" 
+                                           FontSize="16" 
+                                           FontWeight="Bold" 
+                                           Foreground="White" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            
+                            <!-- Character Info -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayName}" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="White"/>
+                                <TextBlock Text="{Binding Description}" 
+                                           FontSize="11" 
+                                           Foreground="#CCCCCC" 
+                                           Margin="0,2,0,0"/>
+                            </StackPanel>
+                            
+                            <!-- Current Indicator -->
+                            <TextBlock Grid.Column="2" 
+                                       Text="●" 
+                                       FontSize="16" 
+                                       Foreground="#00FF00" 
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding IsCurrent, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,20,0,0">
+            <Button Name="SelectButton" 
+                    Content="Select" 
+                    Width="80" 
+                    Height="30" 
+                    Margin="0,0,10,0"
+                    Background="#0078D4" 
+                    Foreground="White" 
+                    BorderThickness="0"
+                    FontWeight="SemiBold"
+                    Click="SelectButton_Click"/>
+            <Button Name="CancelButton" 
+                    Content="Cancel" 
+                    Width="80" 
+                    Height="30"
+                    Background="#666666" 
+                    Foreground="White" 
+                    BorderThickness="0"
+                    FontWeight="SemiBold"
+                    Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

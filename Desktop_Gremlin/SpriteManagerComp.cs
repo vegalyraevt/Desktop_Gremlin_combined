@@ -15,16 +15,22 @@ namespace Mambo
             {
                 return currentFrame;
             }
-            int x = (currentFrame % Settings.SpriteColumn) * Settings.FrameWidth;
-            int y = (currentFrame / Settings.SpriteColumn) * Settings.FrameHeight;
-            if (x + Settings.FrameWidth > sheet.PixelWidth || y + Settings.FrameHeight > sheet.PixelHeight)
+            
+            // Use companion-specific settings with safety defaults
+            int column = Settings.CompSpriteColumn > 0 ? Settings.CompSpriteColumn : 10;
+            int frameWidth = Settings.CompFrameWidth > 0 ? Settings.CompFrameWidth : 300;
+            int frameHeight = Settings.CompFrameHeight > 0 ? Settings.CompFrameHeight : 300;
+            
+            int x = (currentFrame % column) * frameWidth;
+            int y = (currentFrame / column) * frameHeight;
+            if (x + frameWidth > sheet.PixelWidth || y + frameHeight > sheet.PixelHeight)
             {
                 return currentFrame;
             }
-            targetImage.Source = new CroppedBitmap(sheet, new Int32Rect(x, y, Settings.FrameWidth, Settings.FrameHeight));
+            targetImage.Source = new CroppedBitmap(sheet, new Int32Rect(x, y, frameWidth, frameHeight));
             if (frameCount <= 0)
             {
-                Gremlin.ErrorClose($"Error Animation: {sheetName} action: {actionType} has invalid frame count", "Animation Error", true);
+                return 0; // Return safely instead of crashing
             }
             return (currentFrame + 1) % frameCount;
         }
@@ -35,16 +41,22 @@ namespace Mambo
             {
                 return currentFrame;
             }
-            int x = (currentFrame % Settings.SpriteColumn) * Settings.FrameWidth;
-            int y = (currentFrame / Settings.SpriteColumn) * Settings.FrameHeight;
-            if (x + Settings.FrameWidth > sheet.PixelWidth || y + Settings.FrameHeight > sheet.PixelHeight)
+            
+            // Use companion-specific settings with safety defaults
+            int column = Settings.CompSpriteColumn > 0 ? Settings.CompSpriteColumn : 10;
+            int frameWidth = Settings.CompFrameWidth > 0 ? Settings.CompFrameWidth : 300;
+            int frameHeight = Settings.CompFrameHeight > 0 ? Settings.CompFrameHeight : 300;
+            
+            int x = (currentFrame % column) * frameWidth;
+            int y = (currentFrame / column) * frameHeight;
+            if (x + frameWidth > sheet.PixelWidth || y + frameHeight > sheet.PixelHeight)
             {
                 return currentFrame;
             }
-            targetImage.Source = new CroppedBitmap(sheet, new Int32Rect(x, y, Settings.FrameWidth, Settings.FrameHeight));
+            targetImage.Source = new CroppedBitmap(sheet, new Int32Rect(x, y, frameWidth, frameHeight));
             if (frameCount <= 0)
             {
-                Gremlin.ErrorClose($"Error Animation: {sheetName} action: {actionType} has invalid frame count", "Animation Error", true);
+                return 0; // Return safely instead of crashing
             }
             return (currentFrame + 1) % frameCount;
         }
@@ -132,8 +144,34 @@ namespace Mambo
         }
         private static BitmapImage LoadSprite(string filefolder, string fileName, string action, string rootFolder = "Gremlins")
         {
-            string path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                "SpriteSheet", rootFolder, filefolder, action, fileName);
+            string basePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "SpriteSheet", rootFolder, filefolder);
+            
+            // Try new format first: Character/Action/file.png
+            string path = System.IO.Path.Combine(basePath, action, fileName);
+            
+            // If not found, try old format: Character/file.png (flat structure)
+            if (!File.Exists(path))
+            {
+                path = System.IO.Path.Combine(basePath, fileName);
+            }
+            
+            // Also try alternate file names for legacy format characters
+            if (!File.Exists(path))
+            {
+                string altFileName = GetLegacyFileName(fileName, action);
+                if (altFileName != null)
+                {
+                    // Try in action subfolder first
+                    path = System.IO.Path.Combine(basePath, action, altFileName);
+                    if (!File.Exists(path))
+                    {
+                        // Then try flat structure
+                        path = System.IO.Path.Combine(basePath, altFileName);
+                    }
+                }
+            }
+            
             if (!File.Exists(path))
                 return null;
             try
@@ -149,6 +187,42 @@ namespace Mambo
             catch
             {
                 return null;
+            }
+        }
+        
+        /// <summary>
+        /// Maps new format file names to legacy format equivalents
+        /// </summary>
+        private static string GetLegacyFileName(string newFileName, string action)
+        {
+            switch (newFileName.ToLower())
+            {
+                // Run directions - legacy uses left/right instead of runLeft/runRight
+                case "runleft.png":
+                    return "left.png";
+                case "runright.png":
+                    return "right.png";
+                case "runup.png":
+                    return "backward.png";
+                case "rundown.png":
+                    return "forward.png";
+                    
+                // Walk idle - legacy uses wIdle or walkIdle
+                case "runidle.png":
+                    return "wIdle.png";
+                    
+                // Walk directions
+                case "walkleft.png":
+                    return "walkL.png";
+                case "walkright.png":
+                    return "walkR.png";
+                case "walkup.png":
+                    return "walkU.png";
+                case "walkdown.png":
+                    return "walkD.png";
+                    
+                default:
+                    return null;
             }
         }
     }

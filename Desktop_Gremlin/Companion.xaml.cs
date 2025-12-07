@@ -18,6 +18,10 @@ namespace Mambo
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool GetCursorPos(out POINT lpPoint);
         public Window MainGremlin { get; set; }
+        
+        // Expose the character name for party features
+        public string CharacterName => Settings.CompanionChar;
+        
         public struct POINT
         {
             public int X;
@@ -35,7 +39,8 @@ namespace Mambo
         {
             InitializeComponent();
             SpriteImage.Source = new CroppedBitmap();
-            FrameCounts = ConfigManager.LoadConfigChar(Settings.CompanionChar);
+            // Use companion-specific loader that doesn't overwrite main character settings
+            FrameCounts = ConfigManager.LoadConfigCharCompanion(Settings.CompanionChar);
             GremlinState.LockState();
             InitializeAnimations();
             this.Width = this.Width * Settings.CompanionScale;

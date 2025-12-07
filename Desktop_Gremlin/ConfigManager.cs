@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -256,6 +257,11 @@ public static class ConfigManager
                         }
                     }
                     break;
+                case "SELECTED_ICON":
+                    {
+                        Settings.SelectedIcon = value;
+                    }
+                    break;
             }
 
         }
@@ -301,32 +307,82 @@ public static class ConfigManager
                 case "INTRO": result.Intro = intValue; break;
                 case "IDLE": result.Idle = intValue; break;
                 case "IDLE2": result.Idle2 = intValue; break;
-                case "RUNUP": result.Up = intValue; break;
-                case "RUNDOWN": result.Down = intValue; break;
-                case "RUNLEFT": result.Left = intValue; break;
-                case "RUNRIGHT": result.Right = intValue; break;
+                case "RUNUP": 
+                case "UP":
+                    result.Up = intValue; 
+                    break;
+                case "RUNDOWN": 
+                case "DOWN":
+                    result.Down = intValue; 
+                    break;
+                case "RUNLEFT": 
+                case "LEFT":
+                    result.Left = intValue; 
+                    break;
+                case "RUNRIGHT": 
+                case "RIGHT":
+                    result.Right = intValue; 
+                    break;
                 case "UPLEFT": result.UpLeft = intValue; break;
                 case "UPRIGHT": result.UpRight = intValue; break;
                 case "DOWNLEFT": result.DownLeft = intValue; break;
                 case "DOWNRIGHT": result.DownRight = intValue; break;
                 case "OUTRO": result.Outro = intValue; break;
                 case "GRAB": result.Grab = intValue; break;
-                case "RUNIDLE": result.RunIdle = intValue; break;
+                case "RUNIDLE": 
+                case "WALK_IDLE":  // Legacy name used by some characters like Agnes
+                    result.RunIdle = intValue; 
+                    break;
                 case "CLICK": result.Click = intValue; break;
                 case "HOVER": result.Hover = intValue; break;
                 case "SLEEP": result.Sleep = intValue; break;
-                case "FIREL": result.LeftFire = intValue; break;
-                case "FIRER": result.RightFire = intValue; break;
-                case "RELOAD": result.Reload = intValue; break;
+                case "FIREL": 
+                case "LEFTFIRE":
+                case "FIRELEFT":
+                    // Only set if character supports fire mechanics
+                    if (CharacterFeatureManager.CharacterHasFeature(character, "fire"))
+                    {
+                        result.LeftFire = intValue; 
+                    }
+                    break;
+                case "FIRER": 
+                case "RIGHTFIRE":
+                case "FIRERIGHT":
+                    // Only set if character supports fire mechanics
+                    if (CharacterFeatureManager.CharacterHasFeature(character, "fire"))
+                    {
+                        result.RightFire = intValue; 
+                    }
+                    break;
+                case "RELOAD": 
+                    // Only set if character supports ammo system
+                    if (CharacterFeatureManager.CharacterHasFeature(character, "ammo"))
+                    {
+                        result.Reload = intValue; 
+                    }
+                    break;
                 case "PAT": result.Pat = intValue; break;
-                case "WALKLEFT": result.WalkL = intValue; break;
-                case "WALKRIGHT": result.WalkR = intValue; break;
-                case "WALKUP": result.WalkUp = intValue; break;
-                case "WALKDOWN": result.WalkDown = intValue; break;
+                case "WALKLEFT": 
+                case "WALK_L":
+                    result.WalkL = intValue; 
+                    break;
+                case "WALKRIGHT": 
+                case "WALK_R":
+                    result.WalkR = intValue; 
+                    break;
+                case "WALKUP": 
+                case "WALK_U":
+                    result.WalkUp = intValue; 
+                    break;
+                case "WALKDOWN": 
+                case "WALK_D":
+                    result.WalkDown = intValue; 
+                    break;
                 case "EMOTE1": result.Emote1 = intValue; break;
                 case "EMOTE2": result.Emote2 = intValue; break;
                 case "EMOTE3": result.Emote3 = intValue; break;
                 case "EMOTE4": result.Emote4 = intValue; break;
+                case "DANCE": result.Dance = intValue; break;
                 case "JUMPSCARE": result.JumpScare = intValue; break;
                 case "POOF": result.Poof = intValue; break;
                 case "WIDTH": Settings.FrameWidth = intValue; break;
@@ -334,6 +390,88 @@ public static class ConfigManager
                 case "COLUMN": Settings.SpriteColumn = intValue; break;
                 case "WIDTHJS": Settings.FrameWidthJs = intValue; break;
                 case "HEIGHTJS": Settings.FrameHeightJs = intValue; break;
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Loads character config for companion - stores dimensions in companion-specific settings
+    /// </summary>
+    public static FrameCounts LoadConfigCharCompanion(string character)
+    {
+        var result = new FrameCounts();
+        string path = System.IO.Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "SpriteSheet", "Gremlins", character, "config.txt");
+
+        if (!File.Exists(path))
+        {
+            // Companion config missing - not fatal, just return empty
+            return result;
+        }
+
+        foreach (var line in File.ReadAllLines(path))
+        {
+            if (string.IsNullOrWhiteSpace(line) || !line.Contains("="))
+            {
+                continue;
+            }
+
+            var parts = line.Split('=');
+            if (parts.Length != 2)
+            {
+                continue;
+            }
+            
+            string key = parts[0].Trim();
+            string value = parts[1].Trim();
+
+            if (!int.TryParse(value, out int intValue))
+            {
+                continue;
+            }
+                
+            switch (key.ToUpper())
+            {
+                case "INTRO": result.Intro = intValue; break;
+                case "IDLE": result.Idle = intValue; break;
+                case "IDLE2": result.Idle2 = intValue; break;
+                case "RUNUP": 
+                case "UP":
+                    result.Up = intValue; 
+                    break;
+                case "RUNDOWN": 
+                case "DOWN":
+                    result.Down = intValue; 
+                    break;
+                case "RUNLEFT": 
+                case "LEFT":
+                    result.Left = intValue; 
+                    break;
+                case "RUNRIGHT": 
+                case "RIGHT":
+                    result.Right = intValue; 
+                    break;
+                case "UPLEFT": result.UpLeft = intValue; break;
+                case "UPRIGHT": result.UpRight = intValue; break;
+                case "DOWNLEFT": result.DownLeft = intValue; break;
+                case "DOWNRIGHT": result.DownRight = intValue; break;
+                case "OUTRO": result.Outro = intValue; break;
+                case "GRAB": result.Grab = intValue; break;
+                case "RUNIDLE":
+                case "WALK_IDLE":  // Legacy name used by some characters like Agnes
+                    result.RunIdle = intValue; 
+                    break;
+                case "CLICK": result.Click = intValue; break;
+                case "HOVER": result.Hover = intValue; break;
+                case "SLEEP": result.Sleep = intValue; break;
+                case "PAT": result.Pat = intValue; break;
+                case "POOF": result.Poof = intValue; break;
+                // Store in COMPANION settings, not main settings
+                case "WIDTH": Settings.CompFrameWidth = intValue; break;
+                case "HEIGHT": Settings.CompFrameHeight = intValue; break;
+                case "COLUMN": Settings.CompSpriteColumn = intValue; break;
             }
         }
         return result;
@@ -469,8 +607,53 @@ public static class ConfigManager
         public void SetupTrayIcon()
         {
             _trayIcon = new NotifyIcon();
+            
+            // Load the selected icon
+            LoadSelectedIcon();
 
-            if (File.Exists("SpriteSheet/System/ico.ico"))
+            _trayIcon.Visible = true;
+            _trayIcon.Text = "Desktop Gremlin";
+
+            var menu = new ContextMenuStrip();
+            menu.Items.Add("Switch Character", null, (s, e) => ShowCharacterSelector());
+            menu.Items.Add("Dance! 💃", null, (s, e) => TriggerDance());
+            menu.Items.Add("Toggle Combat Mode 🔫", null, (s, e) => ToggleCombatMode());
+            
+            // Add icon selection submenu
+            var iconMenu = new ToolStripMenuItem("Change Icon 🎨");
+            string iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Icons");
+            if (Directory.Exists(iconsPath))
+            {
+                foreach (var iconFile in Directory.GetFiles(iconsPath, "*.ico"))
+                {
+                    string iconName = Path.GetFileNameWithoutExtension(iconFile);
+                    var menuItem = new ToolStripMenuItem(iconName);
+                    menuItem.Checked = (iconName == Settings.SelectedIcon);
+                    menuItem.Click += (s, e) => ChangeIcon(iconName);
+                    iconMenu.DropDownItems.Add(menuItem);
+                }
+            }
+            menu.Items.Add(iconMenu);
+            
+            menu.Items.Add("-"); // Separator
+            menu.Items.Add("Debug View 🔧", null, (s, e) => DebugOverlay.Toggle());
+            menu.Items.Add("Settings ⚙️", null, (s, e) => SettingsWindow.ShowSettings());
+            menu.Items.Add("-"); // Separator
+            menu.Items.Add("Stylish Close", null, (s, e) => CloseApp());
+            menu.Items.Add("Force Close", null, (s, e) => ForceClose());
+            menu.Items.Add("Restart", null, (s, e) => RestartApp());
+            _trayIcon.ContextMenuStrip = menu;
+        }
+        
+        private void LoadSelectedIcon()
+        {
+            string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Icons", Settings.SelectedIcon + ".ico");
+            
+            if (File.Exists(iconPath))
+            {
+                _trayIcon.Icon = new Icon(iconPath);
+            }
+            else if (File.Exists("SpriteSheet/System/ico.ico"))
             {
                 _trayIcon.Icon = new Icon("SpriteSheet/System/ico.ico");
             }
@@ -478,15 +661,201 @@ public static class ConfigManager
             {
                 _trayIcon.Icon = SystemIcons.Application;
             }
+        }
+        
+        private void ChangeIcon(string iconName)
+        {
+            Settings.SelectedIcon = iconName;
+            
+            // Update the tray icon
+            LoadSelectedIcon();
+            
+            // Save to config file
+            SaveIconSetting(iconName);
+            
+            // Update menu checkmarks
+            var menu = _trayIcon.ContextMenuStrip;
+            foreach (ToolStripItem item in menu.Items)
+            {
+                if (item is ToolStripMenuItem iconMenu && iconMenu.Text == "Change Icon 🎨")
+                {
+                    foreach (ToolStripMenuItem subItem in iconMenu.DropDownItems)
+                    {
+                        subItem.Checked = (subItem.Text == iconName);
+                    }
+                    break;
+                }
+            }
+        }
+        
+        private void SaveIconSetting(string iconName)
+        {
+            try
+            {
+                string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.txt");
+                if (!File.Exists(configPath)) return;
+                
+                var lines = File.ReadAllLines(configPath).ToList();
+                bool found = false;
+                
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    if (lines[i].TrimStart().StartsWith("SELECTED_ICON", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lines[i] = $"SELECTED_ICON = {iconName}";
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found)
+                {
+                    lines.Add($"\n//Icon Setting\nSELECTED_ICON = {iconName}");
+                }
+                
+                File.WriteAllLines(configPath, lines);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Failed to save icon setting: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
 
-            _trayIcon.Visible = true;
-            _trayIcon.Text = "Gremlin";
-
-            var menu = new ContextMenuStrip();
-            menu.Items.Add("Stylish Close", null, (s, e) => CloseApp());
-            menu.Items.Add("Force Close", null, (s, e) => ForceClose());
-            menu.Items.Add("Restart", null, (s, e) => RestartApp());
-            _trayIcon.ContextMenuStrip = menu;
+        private void ShowCharacterSelector()
+        {
+            try
+            {
+                var selector = new CharacterSelector();
+                var result = selector.ShowDialog();
+                
+                if (selector.CharacterSelected && !string.IsNullOrEmpty(selector.SelectedCharacter))
+                {
+                    SwitchCharacter(selector.SelectedCharacter);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Failed to open character selector: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void TriggerDance()
+        {
+            try
+            {
+                // Check if current character supports dancing
+                if (!CharacterFeatureManager.CharacterHasFeature(Settings.StartingChar, "dance"))
+                {
+                    System.Windows.Forms.MessageBox.Show(
+                        $"{Settings.StartingChar} doesn't know how to dance!\n\nCharacters that can dance:\n• RiceShower\n• Agnes Tachyon\n• Oguri", 
+                        "No Dancing 💃", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // Trigger dance animation in the main window
+                if (_window is Gremlin gremlinWindow)
+                {
+                    gremlinWindow.TriggerDance();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Failed to trigger dance: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void ToggleCombatMode()
+        {
+            try
+            {
+                // Only works for Exusiai characters
+                if (Settings.StartingChar != "Exusiai" && Settings.StartingChar != "Exusiai_Gun")
+                {
+                    System.Windows.Forms.MessageBox.Show("Combat mode is only available for Exusiai!", "Combat Mode 🔫", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                
+                // Toggle combat mode in the main window
+                if (_window is Gremlin gremlinWindow)
+                {
+                    gremlinWindow.ToggleCombatMode();
+                    UpdateTrayText();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Failed to toggle combat mode: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void SwitchCharacter(string newCharacter)
+        {
+            try
+            {
+                // Switch to new character
+                if (CharacterManager.SwitchCharacter(newCharacter))
+                {
+                    // Update tray text
+                    UpdateTrayText();
+                    
+                    // Notify the main window to reload character
+                    if (_window is Gremlin gremlinWindow)
+                    {
+                        gremlinWindow.ReloadCharacter();
+                    }
+                    
+                    // Update config file to persist selection
+                    UpdateConfigFile(newCharacter);
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show($"Failed to switch to character: {newCharacter}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Error switching character: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        private void UpdateTrayText()
+        {
+            var currentChar = CharacterManager.GetCurrentCharacter();
+            if (!string.IsNullOrEmpty(currentChar))
+            {
+                _trayIcon.Text = $"Desktop Gremlin - {currentChar}";
+            }
+            else
+            {
+                _trayIcon.Text = "Desktop Gremlin";
+            }
+        }
+        
+        private void UpdateConfigFile(string newCharacter)
+        {
+            try
+            {
+                string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.txt");
+                if (File.Exists(configPath))
+                {
+                    var lines = File.ReadAllLines(configPath);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (lines[i].StartsWith("START_CHAR"))
+                        {
+                            lines[i] = $"START_CHAR = {newCharacter}";
+                            break;
+                        }
+                    }
+                    File.WriteAllLines(configPath, lines);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to update config file: {ex.Message}");
+            }
         }
 
         public void CloseApp()

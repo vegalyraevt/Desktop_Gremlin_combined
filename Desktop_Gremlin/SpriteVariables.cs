@@ -81,6 +81,11 @@ public static class Settings
     public static int FrameHeight { get; set; } = 0;
     public static int FrameWidthJs { get; set; } = 0;
     public static int FrameHeightJs { get; set; } = 0;
+    
+    // Companion-specific sprite settings (so companion doesn't overwrite main character)
+    public static int CompFrameWidth { get; set; } = 0;
+    public static int CompFrameHeight { get; set; } = 0;
+    public static int CompSpriteColumn { get; set; } = 0;
     public static int RandomMinInterval { get; set; } = 0;
     public static int RandomMaxInterval { get; set; } = 0;
     public static int MoveDistance { get; set; } = 0;
@@ -106,7 +111,8 @@ public static class Settings
     public static bool ManualReize { get; set; } = false;
     public static bool ForceCenter { get; set; } = false;
     public static bool EnableMinSize { get; set; } = false;
-    public static double VolumeLevel { get; set; } = 1.0;   
+    public static double VolumeLevel { get; set; } = 1.0;
+    public static string SelectedIcon { get; set; } = "Tach3";  // Default icon
 }
 public static class MouseSettings   
 {
