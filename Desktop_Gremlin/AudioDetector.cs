@@ -142,6 +142,84 @@ namespace Desktop_Gremlin
             new[] { "Fanfare for Future" },
         };
         
+        // Extended song list scraped from Uma Musume YouTube playlists (439 songs)
+        private static readonly string[] ScrapedSongTitles = new[]
+        {
+            "A Small Wish", "Absolute Faith", "Achievement", "Aim for the Strongest Team", "Air Race",
+            "All GI Fanfares", "All Race Themes", "All Race Winning Lives", "Ambitious World", "AmpReFire",
+            "Aoharu Cup", "Arima Kinen", "Ashen Memoire", "A・NO・NE", "Bakunetsu my Soul",
+            "Bakushin Bakushin Bakushinshin", "Battle royale", "Beyond The Finale", "Beyond the Future", "Blaze",
+            "Blossoming Reunion", "BLOW my GALE", "BoC'z", "BoC-izm", "Bokura no Bluebird Days",
+            "Breeders Cup", "Bright Melody", "BRIGHTEST HEART", "Campaign End", "CATCH THE VICTORY",
+            "Challenge Dash", "Champions Meeting", "Chokkan No Problem", "Circle Room", "Comeback Story V",
+            "Confident", "Copano Rickey", "Crane Game", "Crowned Patisserie", "Dance 2 Endless Beat",
+            "Days In A Flash", "Dear My Dream", "Derby Winners", "Destroy for Dasein", "Dramatic Journey",
+            "Dream Fest", "DREAM JACK", "Egao no Takaramono", "EMPRESS GAME", "Endless Dream",
+            "Enjoy and Join", "Entry Table", "Everlasting Beats", "Exceed", "Excellent Condition",
+            "Exercise the Right", "Fanfare for Future", "Find My Only Way", "Flapping Run-up", "FORCE",
+            "Forever gold", "Funwari Slowly", "GALACTIC PLAYER", "Game Over", "Gaze on Me",
+            "Gentildonna", "GI Race", "Gift", "GII Race", "Girls Legend U", "Glorious Moment",
+            "Glory Eyes", "Go This Way", "Goal to my Ship", "GOCHISO様", "Golshin Golshin Golshishin",
+            "Grand Live", "Grand Masters", "Grow Up Shine", "GSK☆", "Happy New Future",
+            "Hat on your Head", "I Cant Choose to Give Up", "Ichigeki Nyuukon", "Illuminate The Heart",
+            "Instinct Speed", "Irodori Phantasia", "Iron Wing's Steam Tale", "Japan Derby", "Jingle Bells",
+            "Just a littile bit", "Kibou Discovery", "Kindan Burning Heart", "Kirari Magic Show",
+            "Kiseki Wo Shinjite", "Koeru", "Koi Wa Derby", "Koisuru sekai", "Kyou mo Uraraka",
+            "L' s Surprise", "L'Arc de Gloire", "L'arc de Triomphe", "Late Autumn", "League of Heroes",
+            "Legend Race", "Legend-Changer", "Like a Shooting Star", "LIKE THE WIND", "Logue",
+            "Love Will Come Through", "Lucky Comes True", "Make a New Track", "Make Debut", "Make up in Halloween",
+            "Many-shuki", "Masters Challenge", "Mejiro Ramonu", "Ms. VICTORIA", "My_Against_Fight",
+            "Mystery × Chemistry", "Never Looking Back", "New Year's Karuta Battle", "Next Frontier",
+            "O-rorize", "ONCE MORE, I CAN", "Our Grand Live", "Over a Tiara", "Overlapping Miracles",
+            "Overrunner", "Paddock", "Pegasus Punch", "Play Again", "Pom Pon", "Precious Smiles",
+            "Precious Star Dreamer", "PRESENT MARCH", "Prismatic Spurt", "Prix de l'Arc", "Prologue",
+            "Pyoitto", "QueenBee", "Race Preparation", "Racing Carnival", "Ready!! Steady!! Derby!!",
+            "Ring Ring", "Rising Girl", "ROAD TO THE TOP", "Roar, Yell! Tracen Academy", "Roulette Derby",
+            "Run for Our Dream", "RUN x RUN", "Scout Race", "Secret Graduation", "Seek-Solve Summer Walk",
+            "Seishun ga Matte", "Sekai Wa Bokura No Iinari Sa", "SEVEN", "Shadow Roll No Chikai",
+            "Shake The World", "SHAKEROCK", "Silent Star", "Silks and Three Riddles", "Skill Activation",
+            "Soshite Minna No", "Special Record", "Starting Force", "STARTING GATE", "Stay on Course",
+            "Story BGM", "Story Menu", "Summer Event", "Support Gacha", "Sweet Memory Tea Time",
+            "Team First", "Tenno Sho Spring", "The Beginning Signal", "The First Star Rushes By",
+            "THE SUPER STRONG S", "The Twinkle Legends", "Those Tears are for the tomorrow",
+            "TM Opera Tataeyo Towa Ni", "Tonight, at Ligne Droite", "Torikago No Lonely Bird",
+            "Tracen Academy", "Tracen Ondo", "Trainer Archives", "Transforming", "Tucker's Skill-up Island",
+            "Twinkle Star Climax", "Two Persons", "U M A NEW WORLD", "U.M.A. New World", "UMA Summer",
+            "Umapyoi Densetsu", "Umapyoi Legend", "Umasugi Gourmet Parade", "Umatube Channel", "unbreakable",
+            "Unite!! WINNING LIVE", "UNLIMITED IMPACT", "URA Campaign", "Victory", "Waiting For Tomorrow",
+            "Watashi no Shirushi wa Daihonmei", "We are DREAMERS", "Welcome to the Deserted Island",
+            "WINnin' 5", "WINNING LIVE", "WINNING MELODY", "Winning The Soul", "Winning Ticket",
+            "You know me", "Yukoma Onsen Village", "Yukoma Roman Junjoha", "Yume Wo Kakeru", "Yumezora", "ZOKZOK",
+            // Japanese titles
+            "うまぴょい伝説", "うまゆる", "ささやかな祈り", "ときめきスクランブル", "どこまで走れば",
+            "ぱか☆アゲ↑ミックス", "ひたむきマイノート", "ぴょいっと♪はれるや", "ぶっとび かっとび 全開エンジン",
+            "ぼくらのブルーバードデイズ", "めにしゅき♡ラッシュっしゅ", "ゆこまロマン純情派", "ゆるパカHAPPYDAYS",
+            "わたしの印は大本命", "アコガレ", "イクノディクタス", "ウイニング☆ファイヴ", "ウマドルパワー☆",
+            "エアメサイア", "オルフェーヴル", "オーバーランナー", "キタサンブラック", "ギフト", "コスモピュエラ",
+            "コパノリッキー", "ゴルシちゃんのうた", "ゴールドシチー", "ゴールドシップ", "サクラチヨノオー",
+            "サクラローレル", "サトノクラウン", "サトノダイヤモンド", "シティプリンセス", "シャドーロールの誓い",
+            "シュヴァルグラン", "シリウスシンボリ", "シンデレラグレイ", "シンボリクリスエス", "スマートファルコン",
+            "ゼッタイトナリ", "ゼンノロブロイ", "ソシテミンナノ", "タッカー's スキルアップアイランド",
+            "タップダンスシチー", "タニノギムレット", "ダイアリー", "ダイタクヘリオス", "ツインターボ",
+            "ツルマルツヨシ", "トレセン体操", "トレセン音頭", "ドゥラメンテ", "ドリームジャーニー",
+            "ナカヤマフェスタ", "ネオユニヴァース", "パラ・シエンプレ", "ヒシアマゾン", "ヒシミラクル",
+            "ピスピス☆スピスピ", "ホッコータルマエ", "マヤノトップガン", "マリンブルー・マジック♡",
+            "マーベラスサンデー", "ミッドナイト・エピローグ", "メジロパーマー", "ヤマニンゼファー",
+            "ユメゾラ", "ユメヲカケル", "ユースフルアイズ", "ライトレス", "ラインクラフト", "ラキハピファンタスティック",
+            "ロストシャイン", "ワンダーアキュート", "一撃入魂☆ペガサスパンチ", "七色の景色", "世界は僕らの言いなりさ",
+            "今日もウララかケセラセラ", "以下、勅命", "仰げば尊Mission", "僕が憧れた青", "僕らの帰り道",
+            "光の後ろ姿", "全速！前進", "十帰りの花", "埋火の英雄", "夢のこたえ", "大好きのタカラバコ",
+            "奇跡を信じて", "宇宙走娘", "希望ディスカバリ", "帝笑歌劇〜讃えよ永久に", "彩Phantasia",
+            "忘却にて", "恋する世界", "恋はダービー", "悠々閑々", "感情ノ黎明", "手綱と絆", "春空BLUE",
+            "最強ROARING", "朝露は大河の夢を見る", "木漏れ日のエール", "本能スピード", "楽園", "武名疾走!",
+            "気まぐれ Tuning Heart", "永遠の色彩", "灰のmemoire", "爆熱マイソウル", "猪突猛進爆進中",
+            "直感ノープロブレム", "硝子のエトワール", "禁断Burning Heart", "私が主役じゃダメですか？",
+            "稲荷ノ華", "空のほほえみ方", "立ち位置ゼロ番", "笑っちゃお", "素顔のココロ", "豪快突破☆プリンセス",
+            "走れウマ娘", "輝きストレート", "逃げ切りっ", "銀河冒険譚", "銀河系フィロソフィー", "限界まで",
+            "青春が待ってる", "順位は一番", "願いのカタチ", "魔法がなくちゃはじまらないでしょ",
+            "鳥かごのロンリーバード", "黎明に咲く華"
+        };
+        
         /// <summary>
         /// Check if current media app is a music streaming service (not YouTube/browser)
         /// </summary>
@@ -274,6 +352,18 @@ namespace Desktop_Gremlin
                         DebugOverlay.Log("UMA-CHK", $"TITLE MATCH: '{variant}'");
                         return true;
                     }
+                }
+            }
+            
+            // 5. Check extended scraped song list (439 songs from YouTube playlists)
+            foreach (var title in ScrapedSongTitles)
+            {
+                if (combined.Contains(NormalizeForMatching(title)))
+                {
+                    IsUmaSongPlaying = true;
+                    DetectedUmaSong = title;
+                    DebugOverlay.Log("UMA-CHK", $"SCRAPED MATCH: '{title}'");
+                    return true;
                 }
             }
             

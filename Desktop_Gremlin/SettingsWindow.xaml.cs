@@ -118,10 +118,10 @@ namespace Desktop_Gremlin
         public static bool MusicNotesEnabled { get; set; } = true;
         public static bool DynamicChanceEnabled { get; set; } = false;
         public static int DanceChancePercent { get; set; } = 30;
-        public static int DanceChanceIncrement { get; set; } = 10;
-        public static int StopChancePercent { get; set; } = 40;
-        public static int StopChanceIncrement { get; set; } = 10;
-        public static int DanceCheckIntervalSeconds { get; set; } = 5;
+        public static int DanceChanceIncrement { get; set; } = 2;
+        public static int StopChancePercent { get; set; } = 10;
+        public static int StopChanceIncrement { get; set; } = 1;
+        public static int DanceCheckIntervalSeconds { get; set; } = 6;
         public static int DanceCooldownSeconds { get; set; } = 15;
         
         // Easter egg setting
