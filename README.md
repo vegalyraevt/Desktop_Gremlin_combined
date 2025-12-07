@@ -9,7 +9,7 @@
 ## ✨ What's Different in This Version?
 
 ### 🎯 All Characters in One Application
-Instead of downloading separate executables for each character, this version includes **all characters** in a single application.
+Instead of downloading separate executables for each character, this version includes **all characters** in a single application, plus a few little extras I like. I will endeavor to update this when KurtVelasco adds new characters and features to the base program. Consider it my custom version of their program and nothing more.
 
 ### 🔄 Character Selector
 - **Right-click** the taskbar icon to open the character selector
